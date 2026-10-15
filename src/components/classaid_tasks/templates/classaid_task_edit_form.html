@@ -1,0 +1,157 @@
+{#
+SPDX-FileCopyrightText: 2026 ClassAid-Transfer contributors
+
+SPDX-License-Identifier: AGPL-3.0-only
+#}
+
+{% extends "base.html" %}
+
+{% block body %}
+<section class="section">
+  <div class="container"
+       x-data="classaidTaskForm({{ item.spec_builtins() | tojson | forceescape }})">
+    {# djlint: off H025 -- the <form...> is not actually an orphan #}
+    {% if item.row_id %}
+      <h1 class="title">Editing task '{{ item.name }}' in class '{{ auth.cur_class.class_name }}'</h1>
+      <form class="wide-labels" action="{{ url_for(".update_item", item_id=item.row_id) }}" method="post" @submit="serialize($event)">
+    {% else %}
+      <h1 class="title">Create task in class '{{ auth.cur_class.class_name }}'</h1>
+      <form class="wide-labels" action="{{ url_for(".create_item") }}" method="post" @submit="serialize($event)">
+    {% endif %}
+    {# djlint: on #}
+      <input type="hidden" name="task_json" x-ref="taskJson">
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label" for="name">Title <span title="required">*</span></label></div>
+        <div class="field-body"><div class="field"><div class="control">
+          <input class="input" required autofocus name="name" id="name" value="{{ item.name }}">
+        </div></div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label" for="description">Description</label>
+          <p class="help-text">Shown to students.  Markdown formatting is supported.</p>
+        </div>
+        <div class="field-body"><div class="field"><div class="control">
+          <textarea class="textarea" id="description" rows="6" x-model="spec.description"></textarea>
+        </div></div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label" for="examples">Examples</label>
+          <p class="help-text">Optional sample input/output, shown to students (Markdown).</p>
+        </div>
+        <div class="field-body"><div class="field"><div class="control">
+          <textarea class="textarea" id="examples" rows="4" x-model="spec.examples"></textarea>
+        </div></div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label" for="entry">Entry class</label>
+          <p class="help-text">The class whose <code>main</code> method the Run button executes.</p>
+        </div>
+        <div class="field-body"><div class="field"><div class="control">
+          <input class="input" id="entry" x-model="spec.entry" placeholder="Main">
+        </div></div></div>
+      </div>
+
+      <template x-for="group in [{key: 'files', label: 'Starter files', help: 'Shown to students; they edit these.'}, {key: 'tests', label: 'Test files (JUnit 5)', help: 'Never shown to students.  Used for Run Tests and scoring.'}]" :key="group.key">
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label" x-text="group.label"></label>
+            <p class="help-text" x-text="group.help"></p>
+          </div>
+          <div class="field-body"><div class="field">
+            <template x-for="(file, idx) in spec[group.key]" :key="idx">
+              <div class="box p-3 mb-3">
+                <div class="field has-addons">
+                  <div class="control is-expanded"><input class="input is-family-monospace" x-model="file.name" placeholder="ClassName.java" aria-label="File name"></div>
+                  <div class="control"><button type="button" class="button is-danger is-light" @click="spec[group.key].splice(idx, 1)">Remove</button></div>
+                </div>
+                <textarea class="textarea is-family-monospace" rows="10" x-model="file.content" aria-label="File content"></textarea>
+              </div>
+            </template>
+            <button type="button" class="button is-small" @click="spec[group.key].push({name: '', content: ''})">Add file</button>
+          </div></div>
+        </div>
+      </template>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Test weights</label>
+          <p class="help-text">Test id is <code>TestClass#method</code>.  Tests not listed have weight 1.</p>
+        </div>
+        <div class="field-body"><div class="field">
+          <template x-for="(w, idx) in weights" :key="idx">
+            <div class="field has-addons">
+              <div class="control is-expanded"><input class="input is-family-monospace" x-model="w.id" placeholder="LinkedListTest#removesHead" aria-label="Test id"></div>
+              <div class="control"><input class="input" type="number" min="0.1" step="0.1" x-model.number="w.weight" style="width: 7em;" aria-label="Weight"></div>
+              <div class="control"><button type="button" class="button is-danger is-light" @click="weights.splice(idx, 1)">Remove</button></div>
+            </div>
+          </template>
+          <button type="button" class="button is-small" @click="weights.push({id: '', weight: 1})">Add weight</button>
+        </div></div>
+      </div>
+
+      <div class="notification is-danger is-light" x-show="errors.length" x-cloak>
+        <template x-for="e in errors"><p x-text="e"></p></template>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"></div>
+        <div class="field-body"><div class="field"><div class="control">
+          <button class="button is-link" type="submit">{{ "Save" if item.row_id else "Create" }}</button>
+        </div></div></div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script type="text/javascript">
+function classaidTaskForm(spec) {
+  const fileRe = /^[A-Za-z_][A-Za-z0-9_]*\.java$/;
+  const testIdRe = /^[A-Za-z_][A-Za-z0-9_]*#[A-Za-z_][A-Za-z0-9_]*$/;
+  return {
+    spec: spec,
+    weights: Object.entries(spec.weights || {}).map(([id, weight]) => ({id, weight})),
+    errors: [],
+    validate() {
+      const errors = [];
+      const s = this.spec;
+      if (!s.files.length) errors.push("At least one starter code file is required.");
+      if (!s.tests.length) errors.push("At least one test file is required.");
+      const names = [...s.files, ...s.tests].map(f => f.name.trim());
+      names.filter(n => !fileRe.test(n)).forEach(n => errors.push(`Invalid Java file name: '${n}' (expected e.g. 'LinkedList.java').`));
+      if (new Set(names).size !== names.length) errors.push("File names must be unique across starter files and test files.");
+      if (s.entry && !s.files.some(f => f.name.trim() === `${s.entry.trim()}.java`)) errors.push(`Entry class '${s.entry}' must be one of the starter files.`);
+      this.weights.filter(w => w.id.trim() !== '').forEach(w => {
+        if (!testIdRe.test(w.id.trim())) errors.push(`Invalid test id: '${w.id}' (expected 'TestClass#method').`);
+        if (!(w.weight > 0)) errors.push(`Weight for ${w.id} must be positive.`);
+      });
+      return errors;
+    },
+    serialize(event) {
+      this.errors = this.validate();
+      if (this.errors.length) {
+        event.preventDefault();
+        return;
+      }
+      const s = this.spec;
+      const weights = {};
+      this.weights.filter(w => w.id.trim() !== '').forEach(w => { weights[w.id.trim()] = Number(w.weight); });
+      this.$refs.taskJson.value = JSON.stringify({
+        description: s.description,
+        examples: s.examples,
+        entry: s.entry.trim(),
+        files: s.files.map(f => ({name: f.name.trim(), content: f.content})),
+        tests: s.tests.map(f => ({name: f.name.trim(), content: f.content})),
+        weights: weights,
+      });
+    },
+  };
+}
+</script>
+{% endblock body %}

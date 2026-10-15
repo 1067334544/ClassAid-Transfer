@@ -44,6 +44,8 @@ SPDX-License-Identifier: AGPL-3.0-only
       /* for AlpineJS */
       [x-cloak] { display: none !important; }
     </style>
+    {# Optional application theme (e.g. ClassAid restyles Bulma); applications without it are unaffected. #}
+    {% include "theme_head.html" ignore missing %}
     {% block extrahead %}{% endblock extrahead %}
     <script src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3/dist/cdn.min.js" defer type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer type="text/javascript"></script>

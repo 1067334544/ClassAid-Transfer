@@ -22,3 +22,10 @@ dist/
 .aider*
 
 .idea/
+
+# ClassAid code runner: downloaded JUnit jar (flask --app classaid runner-deps)
+src/components/classaid_tasks/runner/lib/
+
+# ClassAid frontend: dependencies and build output (built by `pnpm --dir frontend build`)
+frontend/node_modules/
+src/classaid/static/dist/

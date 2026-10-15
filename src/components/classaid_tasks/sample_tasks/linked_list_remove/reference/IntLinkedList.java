@@ -1,0 +1,73 @@
+// SAMPLE TASK REFERENCE SOLUTION - NOT REVIEWED BY AN INSTRUCTOR.  Never shown to students.
+
+/** A singly linked list of ints. */
+public class IntLinkedList {
+    static class Node {
+        int value;
+        Node next;
+
+        Node(int value) {
+            this.value = value;
+        }
+    }
+
+    private Node head;
+    private int size;
+
+    /** Appends a value to the end of the list. */
+    public void add(int value) {
+        Node node = new Node(value);
+        if (head == null) {
+            head = node;
+        } else {
+            Node cur = head;
+            while (cur.next != null) {
+                cur = cur.next;
+            }
+            cur.next = node;
+        }
+        size++;
+    }
+
+    /** Number of values in the list. */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * Removes the first node holding {@code value}.
+     * Returns true if a node was removed, false if the value is not in the list.
+     */
+    public boolean remove(int value) {
+        if (head == null) {
+            return false;
+        }
+        if (head.value == value) {
+            head = head.next;
+            size--;
+            return true;
+        }
+        Node prev = head;
+        while (prev.next != null && prev.next.value != value) {
+            prev = prev.next;
+        }
+        if (prev.next == null) {
+            return false;
+        }
+        prev.next = prev.next.next;
+        size--;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (Node cur = head; cur != null; cur = cur.next) {
+            sb.append(cur.value);
+            if (cur.next != null) {
+                sb.append(", ");
+            }
+        }
+        return sb.append("]").toString();
+    }
+}

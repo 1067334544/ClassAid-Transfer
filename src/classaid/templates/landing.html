@@ -1,0 +1,48 @@
+{#
+SPDX-FileCopyrightText: 2026 ClassAid-Transfer contributors
+
+SPDX-License-Identifier: AGPL-3.0-only
+#}
+
+{% extends "base.html" %}
+
+{% block head %}
+  <meta name="description" content="ClassAid is a classroom programming environment in which an instructor-controlled AI teaching assistant supports students working on Java tasks.">
+{% endblock head %}
+
+{% block extrahead %}
+<style type="text/css">
+  .ca-landing { max-width: 960px; margin: 0 auto; padding: var(--ca-space-6) var(--ca-space-4); }
+  .ca-landing__hero { display: flex; align-items: center; gap: var(--ca-space-6); flex-wrap: wrap; }
+  .ca-landing__logo { width: 120px; height: 120px; color: var(--ca-primary); background: var(--ca-primary-soft); border-radius: 28px; padding: 22px; }
+  .ca-landing h1 { font-size: 40px; font-weight: 700; color: var(--ca-text); margin: 0; letter-spacing: -0.5px; }
+  .ca-landing__lead { font-size: var(--ca-text-xl); color: var(--ca-text-muted); margin: var(--ca-space-2) 0 var(--ca-space-5); max-width: 560px; }
+  .ca-landing__modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--ca-space-3); margin-top: var(--ca-space-6); }
+  .ca-landing__mode { background: var(--ca-surface); border: 1px solid var(--ca-border); border-top: 4px solid var(--mode); border-radius: var(--ca-radius); padding: var(--ca-space-4); box-shadow: var(--ca-shadow-sm); }
+  .ca-landing__mode h2 { font-size: var(--ca-text-lg); font-weight: 600; margin: 0 0 4px; color: var(--ca-text); }
+  .ca-landing__mode p { font-size: var(--ca-text-sm); color: var(--ca-text-muted); margin: 0; }
+</style>
+{% endblock extrahead %}
+
+{% block body %}
+<div class="ca-landing">
+  <div class="ca-landing__hero">
+    <svg class="ca-landing__logo" aria-hidden="true"><use href="#svg_app_logo" /></svg>
+    <div>
+      <h1>ClassAid</h1>
+      <p class="ca-landing__lead">Classroom Java programming with an AI teaching assistant whose help your instructor controls.</p>
+      {% if auth.user %}
+        <a class="button is-link is-medium" href="{{ url_for('classes.class_home') }}">Go to my class</a>
+      {% else %}
+        <a class="button is-link is-medium" href="{{ url_for('auth.login') }}">Log in</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="ca-landing__modes">
+    <div class="ca-landing__mode" style="--mode: var(--ca-mode-heuristic)"><h2>Heuristic</h2><p>Guiding questions and hints, without the solution.</p></div>
+    <div class="ca-landing__mode" style="--mode: var(--ca-mode-technical)"><h2>Technical</h2><p>Direct explanations and corrected code.</p></div>
+    <div class="ca-landing__mode" style="--mode: var(--ca-mode-auto)"><h2>Auto</h2><p>The assistant chooses the kind of help for each question.</p></div>
+    <div class="ca-landing__mode" style="--mode: var(--ca-mode-silent)"><h2>Silent</h2><p>AI help paused so you can work on your own.</p></div>
+  </div>
+</div>
+{% endblock body %}

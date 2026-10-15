@@ -1,0 +1,28 @@
+{#
+SPDX-FileCopyrightText: 2026 ClassAid-Transfer contributors
+
+SPDX-License-Identifier: AGPL-3.0-only
+#}
+
+{# Shell for the Vue pages: loads the design tokens and a built frontend entry, and passes startup data. #}
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {# theme.css comes from theme_head.html (included by base.html) #}
+  {% for href in assets.styles %}
+    <link rel="stylesheet" href="{{ href }}">
+  {% endfor %}
+  <style type="text/css">
+    main.site-content { background: var(--ca-bg); }
+    #classaid-app { font-family: var(--ca-font); color: var(--ca-text); font-size: var(--ca-text-md); }
+    #classaid-app :not(pre) > code { color: inherit; background: var(--ca-surface-muted); border-radius: 4px; padding: 0.05em 0.35em; }
+  </style>
+{% endblock extrahead %}
+
+{% block body %}
+  <div id="classaid-app"></div>
+  <script id="classaid-bootstrap" type="application/json">{{ bootstrap | tojson }}</script>
+  {% for src in assets.scripts %}
+    <script type="module" src="{{ src }}"></script>
+  {% endfor %}
+{% endblock body %}

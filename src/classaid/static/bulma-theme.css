@@ -1,0 +1,123 @@
+/* SPDX-FileCopyrightText: 2026 ClassAid-Transfer contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Restyles Gen-Ed's Bulma-based Jinja pages (navbar, login, class pages, class configuration)
+ * with the ClassAid design tokens from theme.css (design.md D11).  Only colors, fonts, radii,
+ * and shadows change; page structure is untouched.  Loaded through templates/theme_head.html.
+ */
+
+body {
+  font-family: var(--ca-font);
+  color: var(--ca-text);
+  background: var(--ca-bg);
+}
+main.site-content { background: var(--ca-bg); }
+.title, .subtitle, .label, .menu-label, strong { color: var(--ca-text); }
+.subtitle { color: var(--ca-text-muted); }
+a { color: var(--ca-primary); }
+a:hover { color: var(--ca-primary-hover); }
+code {
+  color: var(--ca-text);
+  background: var(--ca-surface-muted);
+  border-radius: 4px;
+}
+pre { background: var(--ca-surface-muted); border-radius: var(--ca-radius-sm); }
+
+/* navbar: light surface instead of Bulma's dark bar */
+nav.navbar.is-dark {
+  background: var(--ca-surface);
+  border-bottom: 1px solid var(--ca-border);
+  box-shadow: var(--ca-shadow-sm);
+}
+nav.navbar.is-dark .navbar-item,
+nav.navbar.is-dark .navbar-link,
+nav.navbar.is-dark .navbar-burger { color: var(--ca-text); }
+nav.navbar.is-dark .navbar-brand > .navbar-item:first-child { color: var(--ca-primary); font-weight: 700; }
+nav.navbar.is-dark a.navbar-item:hover,
+nav.navbar.is-dark .navbar-item.has-dropdown:hover .navbar-link,
+nav.navbar.is-dark .navbar-item.is-hoverable:hover { background: var(--ca-primary-soft); color: var(--ca-primary); }
+nav.navbar.is-dark .navbar-item.has-text-success { color: var(--ca-primary) !important; }
+nav.navbar.is-dark .navbar-item.has-text-warning { color: var(--ca-text-muted) !important; }
+nav.navbar.is-dark .navbar-item.has-text-danger { color: var(--ca-error) !important; }
+nav.navbar.is-dark .navbar-menu { background: var(--ca-surface); }
+nav.navbar.is-dark .navbar-burger span { background-color: var(--ca-text); }
+
+/* buttons */
+.button { border-radius: var(--ca-radius-sm); font-weight: 500; }
+.button.is-rounded { border-radius: 999px; }
+.button.is-link, .button.is-primary, .button.is-info {
+  background-color: var(--ca-primary);
+  border-color: transparent;
+  color: #fff;
+}
+.button.is-link:hover, .button.is-primary:hover, .button.is-info:hover,
+.button.is-link.is-hovered, .button.is-primary.is-hovered { background-color: var(--ca-primary-hover); color: #fff; }
+.button.is-link.is-outlined, .button.is-primary.is-outlined { background: transparent; border-color: var(--ca-primary); color: var(--ca-primary); }
+.button.is-link.is-outlined:hover, .button.is-primary.is-outlined:hover { background: var(--ca-primary); color: #fff; }
+.button.is-link.is-light, .button.is-primary.is-light { background: var(--ca-primary-soft); color: var(--ca-primary); }
+.button.is-success { background-color: var(--ca-success); }
+.button.is-danger { background-color: var(--ca-error); }
+.button.is-danger.is-light { background: var(--ca-error-soft); color: var(--ca-error); }
+
+/* surfaces */
+.box, .card, .panel, .dropdown-content, .modal-card {
+  border-radius: var(--ca-radius-lg);
+  box-shadow: var(--ca-shadow);
+  border: 1px solid var(--ca-border);
+}
+.card-header { box-shadow: none; border-bottom: 1px solid var(--ca-border); }
+.table { background: transparent; color: var(--ca-text); }
+.table th { color: var(--ca-text-muted); font-weight: 500; }
+.table td, .table th { border-color: var(--ca-border); }
+.tag:not(body) { border-radius: 999px; }
+.has-background-link { background-color: var(--ca-primary) !important; }
+
+/* forms */
+.input, .textarea, .select select {
+  border-radius: var(--ca-radius-sm);
+  border-color: var(--ca-border-strong);
+  box-shadow: none;
+}
+.input:focus, .textarea:focus, .select select:focus,
+.input.is-focused, .textarea.is-focused {
+  border-color: var(--ca-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ca-primary) 18%, transparent);
+}
+.select:not(.is-multiple):not(.is-loading)::after { border-color: var(--ca-primary); }
+
+/* notifications (flash messages) */
+.notification { border-radius: var(--ca-radius); }
+.notification.is-info, .notification.is-link { background: var(--ca-info-soft); color: var(--ca-info); }
+.notification.is-success { background: var(--ca-success-soft); color: var(--ca-success); }
+.notification.is-warning { background: var(--ca-warning-soft); color: var(--ca-warning); }
+.notification.is-danger { background: var(--ca-error-soft); color: var(--ca-error); }
+
+/* footer */
+footer.footer.has-background-dark {
+  background: var(--ca-surface) !important;
+  border-top: 1px solid var(--ca-border);
+  padding: var(--ca-space-5) var(--ca-space-4);
+}
+footer.footer.has-background-dark, footer.footer.has-background-dark .has-text-light { color: var(--ca-text-muted) !important; }
+footer.footer.has-background-dark b, footer.footer.has-background-dark strong { color: var(--ca-text); }
+
+/* native checkboxes and radio buttons */
+input[type="checkbox"], input[type="radio"] { accent-color: var(--ca-primary); }
+
+/* Bulma color utilities and panels used by Gen-Ed pages (login, class home) */
+.box.has-background-grey-dark {
+  background: linear-gradient(135deg, var(--ca-primary), var(--ca-mode-auto)) !important;
+  border: 0;
+}
+.box.has-background-grey-dark .title, .box.has-background-grey-dark .subtitle,
+.box.has-background-grey-dark .has-text-light, .box.has-background-grey-dark .has-text-white { color: #fff !important; }
+.box.has-background-grey-dark .subtitle { opacity: 0.85; }
+.has-background-link-light { background-color: var(--ca-primary-soft) !important; }
+.has-background-info-light { background-color: var(--ca-info-soft) !important; }
+.has-background-light { background-color: var(--ca-surface-muted) !important; }
+.panel { overflow: hidden; }
+.panel.is-info .panel-heading, .panel-heading {
+  background: var(--ca-primary);
+  color: #fff;
+  border-radius: var(--ca-radius-lg) var(--ca-radius-lg) 0 0;
+}

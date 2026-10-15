@@ -162,6 +162,59 @@ per-route controls, should be protected manually using the access controls in
 
 See the instructions in `README.md`.
 
+### Running ClassAid Locally
+
+ClassAid (`src/classaid/`) is a separate application in this repository.  It
+shares `src/gened/` with CodeHelp but uses its own database (`classaid.db`)
+and its own components (`src/components/classaid_*`).  Keep its instance
+directory separate from CodeHelp's so the two databases are never confused:
+
+```sh
+export FLASK_INSTANCE_PATH=instance/classaid   # overrides the value in .env
+flask --app classaid initdb                     # once, creates instance/classaid/classaid.db
+flask --app classaid newuser --admin [username] # prints a generated password
+flask --app classaid run --debug
+```
+
+`--app classaid` overrides `FLASK_APP` from `.env`, so the same `.env`
+(`SECRET_KEY`, `SYSTEM_API_KEY`, `SYSTEM_MODEL_SHORTNAME`) serves both
+applications.  As in CodeHelp, students can only receive AI feedback in a class
+whose instructor has set a class API key.
+
+Running student code requires a JDK 21 and JUnit.  The code runner is
+configured with environment variables:
+
+- `CLASSAID_RUNNER`: `docker` (the default) or `local`.
+- `CLASSAID_JAVA_HOME`: the JDK home directory for the local runner, e.g.
+  `/opt/homebrew/opt/openjdk@21` for a Homebrew install.
+- `CLASSAID_ALLOW_LOCAL_RUNNER=1`: required to use `CLASSAID_RUNNER=local`
+  outside of tests.  The local runner runs student code directly on the host
+  with only resource limits (no isolation), so it is for local development
+  only; without this variable ClassAid refuses to start with the local runner.
+  Deployments with real students must use the Docker runner.
+- `CLASSAID_JUNIT_JAR`, `CLASSAID_DOCKER_IMAGE`: optional overrides.
+
+For local development:
+
+```sh
+flask --app classaid runner-deps   # once: downloads the pinned JUnit jar (checksum-verified)
+export CLASSAID_RUNNER=local CLASSAID_ALLOW_LOCAL_RUNNER=1
+export CLASSAID_JAVA_HOME=/opt/homebrew/opt/openjdk@21
+```
+
+The Docker runner needs the runner image (JDK 21 + harness + JUnit):
+
+```sh
+cd src/components/classaid_tasks/runner
+docker build -t classaid-runner:junit-1.14.4 -f container/Dockerfile .
+```
+
+Runner contract tests (`tests/classaid/test_runner_contract.py`) run each case
+against both runners.  Local-runner cases need `CLASSAID_JAVA_HOME` (or
+`JAVA_HOME`) and the JUnit jar; Docker cases (marker `docker`) need Docker and
+the image.  Missing prerequisites skip the corresponding cases with a reason
+(`pytest -rs` lists them).
+
 ### Running Tests
 
 First, install development dependencies:
@@ -184,6 +237,10 @@ throwaway database in a temporary directory (configured via `.env.test`), so
 tests never touch the development database in `instance/`.  LLM calls are
 mocked by default via `src/gened/testing/mocks.py`; tests marked with
 `use_real_openai` instead make real requests to the OpenAI API.
+
+Tests under `tests/classaid/` override the `app` fixture with a ClassAid
+application and their own test data (`tests/classaid/test_data.sql`; local
+logins are `<username>` / `<username>pw`).  LLM calls are always mocked there.
 
 For a code coverage report (written to `htmlcov/index.html`):
 

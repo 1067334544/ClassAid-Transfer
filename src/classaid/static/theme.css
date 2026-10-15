@@ -1,0 +1,78 @@
+/* SPDX-FileCopyrightText: 2026 ClassAid-Transfer contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * ClassAid design tokens: the single source of the visual specification (design.md D11).
+ * Used by the Vue pages (mapped onto Naive UI's themeOverrides at runtime, see
+ * frontend/src/theme.ts) and by the Gen-Ed Jinja pages (Bulma overrides, task 7.3).
+ * Feedback-mode colors follow the ClassAid paper (§4.3): Auto purple, Technical blue,
+ * Heuristic yellow, Silent gray.
+ */
+
+:root {
+  /* brand */
+  --ca-primary: #4f46e5;
+  --ca-primary-hover: #4338ca;
+  --ca-primary-pressed: #3730a3;
+  --ca-primary-soft: #eef2ff;
+
+  /* neutrals */
+  --ca-bg: #f6f7fb;
+  --ca-surface: #ffffff;
+  --ca-surface-muted: #f1f3f8;
+  --ca-border: #e3e6ee;
+  --ca-border-strong: #cfd4df;
+  --ca-text: #1f2430;
+  --ca-text-muted: #5b6474;
+  --ca-text-subtle: #8a92a3;
+
+  /* status */
+  --ca-success: #15803d;
+  --ca-success-soft: #e8f6ec;
+  --ca-error: #c62828;
+  --ca-error-soft: #fdecec;
+  --ca-warning: #b45309;
+  --ca-warning-soft: #fff4e0;
+  --ca-info: #2563eb;
+  --ca-info-soft: #eaf1fe;
+
+  /* feedback modes: solid (badges, accents), soft (backgrounds), text (on soft) */
+  --ca-mode-auto: #7c3aed;
+  --ca-mode-auto-soft: #f3edff;
+  --ca-mode-auto-text: #5b21b6;
+  --ca-mode-technical: #2563eb;
+  --ca-mode-technical-soft: #eaf1fe;
+  --ca-mode-technical-text: #1d4ed8;
+  --ca-mode-heuristic: #d4a106;
+  --ca-mode-heuristic-soft: #fdf6dc;
+  --ca-mode-heuristic-text: #8a6300;
+  --ca-mode-silent: #6b7280;
+  --ca-mode-silent-soft: #f1f2f4;
+  --ca-mode-silent-text: #4b5563;
+
+  /* typography */
+  --ca-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --ca-font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  --ca-text-xs: 12px;
+  --ca-text-sm: 13px;
+  --ca-text-md: 14px;
+  --ca-text-lg: 16px;
+  --ca-text-xl: 20px;
+  --ca-text-2xl: 26px;
+  --ca-leading: 1.55;
+
+  /* spacing (4px grid) */
+  --ca-space-1: 4px;
+  --ca-space-2: 8px;
+  --ca-space-3: 12px;
+  --ca-space-4: 16px;
+  --ca-space-5: 24px;
+  --ca-space-6: 32px;
+
+  /* shape and depth */
+  --ca-radius-sm: 6px;
+  --ca-radius: 10px;
+  --ca-radius-lg: 14px;
+  --ca-shadow-sm: 0 1px 2px rgba(20, 24, 40, 0.06);
+  --ca-shadow: 0 1px 3px rgba(20, 24, 40, 0.08), 0 4px 12px rgba(20, 24, 40, 0.05);
+  --ca-shadow-lg: 0 8px 28px rgba(20, 24, 40, 0.12);
+}

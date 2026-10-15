@@ -1,0 +1,17 @@
+{
+  "title": "Linked list: remove a value (sample)",
+  "review_status": "SAMPLE TASK - NOT REVIEWED BY AN INSTRUCTOR. For verifying the ClassAid workflow only; not a selected research task.",
+  "description": "`IntLinkedList` is a singly linked list of `int` values.  `add`, `size`, and `toString` already work.\n\nImplement `remove(int value)`: remove the **first** node that holds `value` and return `true`, or return `false` (and leave the list unchanged) if `value` is not in the list.  Keep `size()` correct.\n\nThink about every position the node could be in: the head, the middle, the tail, or the only node.",
+  "examples": "```\nlist = [3, 5, 7]\nlist.remove(5)  -> true,  list = [3, 7], size() = 2\nlist.remove(9)  -> false, list = [3, 7], size() = 2\n```",
+  "entry": "Main",
+  "weights": {
+    "IntLinkedListTest#removeFromEmptyList": 1,
+    "IntLinkedListTest#removeMissingValue": 1,
+    "IntLinkedListTest#removeHead": 2,
+    "IntLinkedListTest#removeMiddle": 2,
+    "IntLinkedListTest#removeTail": 2,
+    "IntLinkedListTest#removeOnlyElement": 1,
+    "IntLinkedListTest#removesOnlyFirstOccurrence": 1,
+    "IntLinkedListTest#sizeUpdates": 1
+  }
+}

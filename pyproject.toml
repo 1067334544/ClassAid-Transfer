@@ -65,6 +65,7 @@ addopts = [
 ]
 markers = [
     "use_real_openai: marks any test that sends requests to the real OpenAI endpoint",
+    "docker: marks tests that require Docker and the ClassAid runner image (skipped when unavailable)",
 ]
 
 
@@ -124,4 +125,4 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.package-data]
 "*" = ["py.typed", "robots.txt", "*.sql", "static/**/*", "templates/*.html", "templates/*.xml", "migrations/*.sql", "docs/*.md"]
-"components" = ["*/static/**/*", "*/templates/*.html", "*/migrations/*.sql"]
+"components" = ["*/static/**/*", "*/templates/*.html", "*/migrations/*.sql", "classaid_tasks/runner/java/*.java", "classaid_tasks/runner/container/Dockerfile", "classaid_tasks/sample_tasks/*/task.json", "classaid_tasks/sample_tasks/*/*/*.java"]
